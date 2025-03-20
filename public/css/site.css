@@ -1,0 +1,22 @@
+body {
+    margin:0;
+    background-color: #999999;
+}
+
+#root-content {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+#root-body{}
+
+button{
+    height:2em;
+    background-color: #222222;
+    color: white;
+    border: 1px solid #222222;
+    border-radius: 5px;
+}
