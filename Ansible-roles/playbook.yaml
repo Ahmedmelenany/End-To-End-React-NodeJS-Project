@@ -1,0 +1,22 @@
+- name: Install packages in Master and Worker Linux nodes
+  hosts: all 
+  become: true
+  gather_facts: true
+  roles:
+    - docker
+    - node-exporter
+
+- name: Install packages in Master and Worker Linux nodes
+  hosts: master 
+  become: true
+  gather_facts: true
+  roles:
+    - jenkins 
+    - prom-grafana
+
+- name: Install packages in Master and Worker Linux nodes
+  hosts: worker 
+  become: true
+  gather_facts: true
+  roles:
+    - trivy-jenkins-agent

@@ -1,0 +1,44 @@
+---
+# tasks file for roles/nodes
+- name: install required dependencies 
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  loop: "{{ common_dependencies }}"
+    
+- name: add GPG key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+    
+- name: add docker repository to apt
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu "{{ ubuntu_codename }}" stable
+    state: present 
+  
+- name: install docker
+  apt:
+    name: "{{item}}"
+    state: latest
+    update_cache: yes
+  loop: "{{ docker_tools }}"
+  
+    
+- name: start docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+    
+- name: Ensure group docker exists
+  ansible.builtin.group:
+    name: docker
+    state: present
+    
+- name: adding user to docker group
+  user:
+    name: "{{ docker_user }}"
+    groups: docker
+    append: yes
+

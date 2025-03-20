@@ -1,0 +1,31 @@
+---
+# tasks file for trivy
+- name: Add trivy-key
+  shell: wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor -o /usr/share/keyrings/trivy.gpg
+  args:
+    creates: /usr/share/keyrings/trivy.gpg
+- name: Add trivy to apt-repo
+  lineinfile:
+    path: /etc/apt/sources.list.d/trivy.list
+    line: "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb generic main"
+    create: yes
+- name: Update cache
+  apt:
+    update_cache: yes
+- name: Install trivy
+  apt:
+    name: trivy
+    state: present
+
+- name: install java-17 for remote agent
+  apt:
+    name: openjdk-"{{ version }}"-jre
+    state: present 
+
+- name: Create user ahmed and add to docker group
+  ansible.builtin.user:
+    name: "{{ user }}"
+    group: docker
+    home: "{{ homeDir }}"
+    shell: /bin/bash
+    createhome: yes

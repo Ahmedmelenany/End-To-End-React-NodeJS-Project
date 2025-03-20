@@ -1,0 +1,5 @@
+---
+# defaults file for trivy
+version: 17
+homeDir: /opt/jenkins
+user: jenkins

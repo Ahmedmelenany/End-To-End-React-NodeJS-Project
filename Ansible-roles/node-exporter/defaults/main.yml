@@ -1,0 +1,6 @@
+---
+# defaults file for ansible/node-exporter
+serviceName: "node_exporter"
+userId: "node_exporter"
+groupId: "node_exporter"
+version: 1.9.0

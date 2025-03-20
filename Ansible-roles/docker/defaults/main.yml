@@ -1,0 +1,18 @@
+---
+# defaults file for roles/machines
+common_dependencies:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg-agent
+  - software-properties-common
+  - unzip
+
+ubuntu_codename: jammy
+
+docker_tools:
+  - docker-ce 
+  - docker-ce-cli 
+  - containerd.io
+
+docker_user: ahmed
