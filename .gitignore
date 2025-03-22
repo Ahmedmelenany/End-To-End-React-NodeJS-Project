@@ -1,0 +1,4 @@
+*.log
+build
+nodemodules
+git-token
