@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: init-mysql
+  namespace: prod
+spec:
+  template:
+    spec:
+      containers:
+      - name: init-mysql
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: root-pass
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_HOST
+        - name: MYSQL_PORT
+          value: "3306"
+        volumeMounts:
+        - name: init-volume
+          mountPath: /tmp/
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          mysql -uroot -p${MYSQL_ROOT_PASSWORD} -h${MYSQL_HOST} -P${MYSQL_PORT} <<EOF
+          CREATE DATABASE IF NOT EXISTS masterdb;
+          GRANT ALL PRIVILEGES ON masterdb.* TO 'ahmed'@'%';
+          FLUSH PRIVILEGES;
+          EOF
+          mysql -uroot -p${MYSQL_ROOT_PASSWORD} -h${MYSQL_HOST} -P${MYSQL_PORT} -Dmasterdb < /tmp/schema.sql
+          mysql -uroot -p${MYSQL_ROOT_PASSWORD} -h${MYSQL_HOST} -P${MYSQL_PORT} -Dmasterdb < /tmp/initialize.sql
+      volumes:
+      - name: init-volume
+        hostPath:
+          path: /opt/ahmed/dbModel
+          type: Directory
+      restartPolicy: Never
+  
+

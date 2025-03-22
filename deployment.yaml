@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solution-deployment
+  labels:
+    app: myapp
+  namespace: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: solution
+        image: ahmedelenany703/solutionapp:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+          - name: http
+            containerPort: 3000
+        env:
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: DB_HOST 
+          - name: USER
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: USER
+          - name: USER_PASS
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: user-pass
+          - name: DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: DB_NAME
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        
+      restartPolicy: Always
