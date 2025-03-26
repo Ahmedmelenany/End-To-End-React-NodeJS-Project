@@ -15,6 +15,7 @@
     "@types/node": "^8.0.32",
     "@types/react": "^16.0.9",
     "@types/react-dom": "^16.0.0",
+    "dotenv": "^16.4.7",
     "ejs": "^2.5.7",
     "express": "^4.21.2",
     "forever": "^0.15.3",
@@ -27,7 +28,9 @@
     "typescript": "^5.8.2"
   },
   "devDependencies": {
-    "browserify": "^14.5.0"
+    "@types/jest": "^29.5.14",
+    "browserify": "^14.5.0",
+    "jest": "^29.7.0"
   },
   "scripts": {
     "start": "node ./build/server.js",
@@ -41,7 +44,7 @@
     "browser-enroll": "browserify public/js/EnrollmentPage.js -o public/js/EnrollmentPage.js -d",
     "browserify": "npm run browser-idx && npm run browser-dept && npm run browser-building && npm run browser-class && npm run browser-student && npm run browser-enroll",
     "build-all": "npm run build-client && npm run build-server && npm run browserify",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest test.js",
     "production": "~/university_app/node_modules/forever/bin/forever start ./build/server.js 5031",
     "production-stop": "~/university_app/node_modules/forever/bin/forever stop ./build/server.js 5031"
   }
