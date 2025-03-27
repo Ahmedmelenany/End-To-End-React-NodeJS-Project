@@ -1,5 +1,4 @@
-// requrire a .env file in the root directory of the application
-require("dotenv").config(); 
+ 
 
 describe("Environment Variables Check", () => {
   test("should have all required environment variables", () => {
