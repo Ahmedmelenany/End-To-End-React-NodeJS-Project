@@ -82,8 +82,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'npmtest', passwordVariable: 'DB_PASS', usernameVariable: 'USER')]) {
                sh 'npm test'
                 }
-               junit allowEmptyResults: true, stdioRetention: '', testResults: 'Test-connectivity.xml'
-        }
+                       }
         }
         
         

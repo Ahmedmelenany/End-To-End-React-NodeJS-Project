@@ -16,9 +16,8 @@ COPY --from=builder /app/build ./build
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/views ./views
 
-ENV NODE_ENV=production
 # Install dependencies for the application with pm2 to start the applicaion
-RUN npm ci --only=production && npm install -g pm2
+RUN npm ci --omit=dev && npm install -g pm2
 
 # Environment variables needed for the application to start
 ENV DB_HOST=localhost
