@@ -134,11 +134,11 @@ pipeline {
                 always {
                     sh '''
                         trivy convert \
-                            --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
+                            --format template --template "@/usr/local/share/trivy/html.tpl" \
                             --output trivy-image-LOW-MEDIUM-HIGH-results.html trivy-image-LOW-MEDIUM-HIGH-results.json 
 
                         trivy convert \
-                            --format template --template "@/usr/local/share/trivy/templates/html.tpl" \
+                            --format template --template "@/usr/local/share/trivy/html.tpl" \
                             --output trivy-image-CRITICAL-results.html trivy-image-CRITICAL-results.json
 
                         trivy convert \
