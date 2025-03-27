@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: solution
-        image: ahmedelenany703/solution-app:be1c09438ac13d70e46854641e30114d98114f94
+        image: ahmedelenany703/solutionapp:v1
         imagePullPolicy: IfNotPresent
         ports:
           - name: http
