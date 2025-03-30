@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: solution-deployment
+  name: app-deployment
   labels:
     app: myapp
   namespace: jenkins
@@ -16,9 +16,9 @@ spec:
         app: myapp
     spec:
       containers:
-      - name: solution
-        image: ahmedelenany703/solution-app:e6067fc468532c32e5d666ae7f87564a196dae5f
-        imagePullPolicy: IfNotPresent
+      - name: app01
+        image: ahmedelenany703/solutionapp:v1
+        imagePullPolicy: Always
         ports:
           - name: http
             containerPort: 3000
@@ -43,5 +43,15 @@ spec:
               configMapKeyRef:
                 name: app-config
                 key: DB_NAME
-                
+        
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+
       restartPolicy: Always
