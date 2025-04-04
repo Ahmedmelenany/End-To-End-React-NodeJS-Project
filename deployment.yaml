@@ -4,7 +4,6 @@ metadata:
   name: app-deployment
   labels:
     app: myapp
-  namespace: jenkins
 spec:
   replicas: 2
   selector:
