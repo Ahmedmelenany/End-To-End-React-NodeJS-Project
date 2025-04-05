@@ -91,7 +91,7 @@ pipeline {
         
         stage('Building Docker Image') {
             steps {
-                    sh 'docker build -t ahmedelenany703/solutionapp:$GIT_COMMIT .'        
+                    sh 'docker build -t ahmedelenany703/solutionapp:V1.$BUILD_NUMBER .'        
             }
                 
             }
@@ -114,13 +114,13 @@ pipeline {
             stage('Trivy Image Scan') {
             steps {
                 sh  ''' 
-                    trivy image ahmedelenany703/solutionapp:$GIT_COMMIT \
+                    trivy image ahmedelenany703/solutionapp:V1.$BUILD_NUMBER \
                         --severity LOW,MEDIUM,HIGH \
                         --cache-dir /tmp/trivy/ \
                         --quiet \
                         --format json -o trivy-image-LOW-MEDIUM-HIGH-results.json
 
-                    trivy image ahmedelenany703/solutionapp:$GIT_COMMIT \
+                    trivy image ahmedelenany703/solutionapp:V1.$BUILD_NUMBER \
                         --severity CRITICAL \
                         --cache-dir /tmp/trivy/ \
                         --quiet \
@@ -155,7 +155,7 @@ pipeline {
             steps {
               script{
                 withDockerRegistry(credentialsId: 'Ahmed-docker-cred') {
-                    sh 'docker push ahmedelenany703/solutionapp:$GIT_COMMIT'        
+                    sh 'docker push ahmedelenany703/solutionapp:V1.$BUILD_NUMBER'        
                 }
             }
                 
@@ -167,7 +167,7 @@ pipeline {
            steps {
                  withKubeConfig(clusterName: 'kubernetes', credentialsId: 'staging-cluster-cred', namespace: 'staging', restrictKubeConfigAccess: false, serverUrl: 'https://165.22.84.60:6443') {
                         sh '''
-                            sed -i  "s|ahmedelenany703/solutionapp:.*|ahmedelenany703/solutionapp:$GIT_COMMIT|g" deployment.yaml
+                            sed -i  "s|ahmedelenany703/solutionapp:.*|ahmedelenany703/solutionapp:V1.$BUILD_NUMBER|g" deployment.yaml
                             kubectl apply -f deployment.yaml
                             kubectl apply -f service.yaml
                             '''
@@ -219,7 +219,7 @@ pipeline {
                        git config --global user.name "Jenkins"
                        git add deployment.yaml
                        git remote set-url origin https://Ahmedmelenany:${GIT_TOKEN}@github.com/Ahmedmelenany/End-To-End-React-NodeJS-Project.git
-                       git commit -m "Update Kubernetes deployment image with tag $GIT_COMMIT"
+                       git commit -m "Update Kubernetes deployment image with tag $BUILD_NUMBER"
                        git push -u origin deployment
                        '''        
             }
