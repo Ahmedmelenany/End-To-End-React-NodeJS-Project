@@ -213,6 +213,7 @@ pipeline {
            steps {
                     sh '''
                        cat deployment.yaml
+                       git clone -b deployment https://Ahmedmelenany:${GIT_TOKEN}@github.com/Ahmedmelenany/End-To-End-React-NodeJS-Project.git
                        git checkout deployment
                        git config --global user.email "jenkins@jenkins.com"
                        git config --global user.name "Jenkins"
