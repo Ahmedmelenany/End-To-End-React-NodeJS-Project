@@ -187,6 +187,7 @@ pipeline {
                                                     }
                  withKubeConfig(clusterName: 'kubernetes', credentialsId: 'prod-cluster-cred', namespace: 'prod', restrictKubeConfigAccess: false, serverUrl: 'https://165.22.84.60:6443') {
                         sh '''
+                            sed -i  "s|nodePort: 30100|nodePort: 30200|g" service.yaml
                             kubectl apply -f deployment.yaml
                             kubectl apply -f service.yaml
                             '''
