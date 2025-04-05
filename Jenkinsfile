@@ -192,7 +192,7 @@ pipeline {
            
            steps {
 
-                timeout(time: 10, unit: 'MINUTES') {
+                timeout(time: 1, unit: 'DAYS') {
                 script {
                 input message: "Do you want to proceed with the deployment?",
                       ok: "Yes"
