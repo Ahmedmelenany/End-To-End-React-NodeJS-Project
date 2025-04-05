@@ -4,9 +4,12 @@ pipeline {
     agent any
 
     environment{
-        DB_HOST = "local"
-        DB_NAME = "database"
-        GIT_TOKEN= credentials('Ahmed-git-token')
+            
+            GIT_TOKEN= credentials('Ahmed-git-token')
+            DB_HOST= "local"
+            USER= "Ahmed"
+            USER_PASS= credentials('Ahmed-pass')
+            DB_NAME= "testdb"
     }
 
     tools{
@@ -79,17 +82,15 @@ pipeline {
 
         stage('Test Stage') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'npmtest', passwordVariable: 'DB_PASS', usernameVariable: 'USER')]) {
-               sh 'npm test'
-                }
-                       }
+                sh "npm test"
+                  }
         }
         
         
         
         stage('Building Docker Image') {
             steps {
-                    sh 'docker build -t ahmedelenany703/solution-app:$GIT_COMMIT .'        
+                    sh 'docker build -t ahmedelenany703/solutionapp:$GIT_COMMIT .'        
             }
                 
             }
@@ -112,13 +113,13 @@ pipeline {
             stage('Trivy Image Scan') {
             steps {
                 sh  ''' 
-                    trivy image ahmedelenany703/solution-app:$GIT_COMMIT \
+                    trivy image ahmedelenany703/solutionapp:$GIT_COMMIT \
                         --severity LOW,MEDIUM,HIGH \
                         --cache-dir /tmp/trivy/ \
                         --quiet \
                         --format json -o trivy-image-LOW-MEDIUM-HIGH-results.json
 
-                    trivy image ahmedelenany703/solution-app:$GIT_COMMIT \
+                    trivy image ahmedelenany703/solutionapp:$GIT_COMMIT \
                         --severity CRITICAL \
                         --cache-dir /tmp/trivy/ \
                         --quiet \
@@ -153,7 +154,7 @@ pipeline {
             steps {
               script{
                 withDockerRegistry(credentialsId: 'Ahmed-docker-cred') {
-                    sh 'docker push ahmedelenany703/solution-app:$GIT_COMMIT'        
+                    sh 'docker push ahmedelenany703/solutionapp:$GIT_COMMIT'        
                 }
             }
                 
@@ -161,11 +162,11 @@ pipeline {
         }
         
 
-        stage('Deploy Stage') {
+        stage('Deploy to Staging') {
            steps {
-                 withKubeConfig(caCertificate: '', clusterName: 'kubernetes', contextName: '', credentialsId: 'cluster-cred', namespace: 'jenkins', restrictKubeConfigAccess: false, serverUrl: 'https://165.22.84.60:6443') {
+                 withKubeConfig(clusterName: 'kubernetes', credentialsId: 'staging-cluster-cred', namespace: 'staging', restrictKubeConfigAccess: false, serverUrl: 'https://165.22.84.60:6443') {
                         sh '''
-                            sed -i "s|ahmedelenany703/solutionapp:.*|ahmedelenany703/solution-app:$GIT_COMMIT|g" deployment.yaml
+                            sed -i  "s|ahmedelenany703/solutionapp:.*|ahmedelenany703/solutionapp:$GIT_COMMIT|g" deployment.yaml
                             kubectl apply -f deployment.yaml
                             kubectl apply -f service.yaml
                             '''
@@ -174,16 +175,37 @@ pipeline {
                 
             }
 
+        stage('Deploy to prod') {
+           
+           steps {
+
+                timeout(time: 10, unit: 'MINUTES') {
+                script {
+                input message: "Do you want to proceed with the deployment?",
+                      ok: "Yes"
+                       }
+                                                    }
+                 withKubeConfig(clusterName: 'kubernetes', credentialsId: 'prod-cluster-cred', namespace: 'prod', restrictKubeConfigAccess: false, serverUrl: 'https://165.22.84.60:6443') {
+                        sh '''
+                            kubectl apply -f deployment.yaml
+                            kubectl apply -f service.yaml
+                            '''
+                    }        
+            }
+                
+            }    
+
         stage('Update image tag to main repository') {
            steps {
                     sh '''
                        cat deployment.yaml
+                       git checkout deployment
                        git config --global user.email "jenkins@jenkins.com"
                        git config --global user.name "Jenkins"
                        git add deployment.yaml
                        git remote set-url origin https://Ahmedmelenany:${GIT_TOKEN}@github.com/Ahmedmelenany/End-To-End-React-NodeJS-Project.git
-                       git commit -m "Update Kubernetes deployment image with tag $GIT_COMMIT [skip ci]"
-                       git push -u origin main
+                       git commit -m "Update Kubernetes deployment image with tag $GIT_COMMIT"
+                       git push -u origin deployment
                        '''        
             }
                 
@@ -196,12 +218,11 @@ pipeline {
 
                 slackNotifications("${currentBuild.result}")
 
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: './', reportFiles: 'trivy-image-LOW-MEDIUM-HIGH-results.html', reportName: 'Trivy Image LMH Report', reportTitles: '', useWrapperFileDirectly: true])
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-image-LOW-MEDIUM-HIGH-results.html', reportName: 'Trivy Image LMH Report', reportTitles: '', useWrapperFileDirectly: true])
 
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: './', reportFiles: 'trivy-image-CRITICAL-results.html', reportName: 'Trivy Image CRITICAL Report', reportTitles: '', useWrapperFileDirectly: true])
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-image-CRITICAL-results.html', reportName: 'Trivy Image CRITICAL Report', reportTitles: '', useWrapperFileDirectly: true])
 
-                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: './', reportFiles: 'trivy-fs-scan.html', reportName: 'Trivy FS Scan Report', reportTitles: '', useWrapperFileDirectly: true])
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: true, reportDir: './', reportFiles: 'trivy-fs-scan.html', reportName: 'Trivy FS Scan Report', reportTitles: '', useWrapperFileDirectly: true])
             }
         }
 }
-
