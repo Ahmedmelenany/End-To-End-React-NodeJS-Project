@@ -10,6 +10,7 @@ pipeline {
             USER= "Ahmed"
             USER_PASS= credentials('Ahmed-pass')
             DB_NAME= "testdb"
+            SERVICE= "http://165.22.84.60:30100/"
     }
 
     tools{
@@ -174,6 +175,18 @@ pipeline {
             }
                 
             }
+
+
+        stage('Acceptance Test')
+        {
+            steps {
+
+                script {
+                    
+                    sh "k6 run -e SERVICE=${SERVICE} acceptance-test.js"
+                }
+            }
+        }
 
         stage('Deploy to prod') {
            
