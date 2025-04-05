@@ -2,12 +2,11 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mysql-statefulset
-  namespace: prod
   labels:
     app: db
 spec:
   serviceName: "mysql-service"
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: db
@@ -46,7 +45,7 @@ spec:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: 2Gi
+          storage: 1Gi
       selector:
         matchLabels:
           app: storage  

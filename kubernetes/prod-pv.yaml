@@ -1,8 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: pv-node
-  namespace: prod
+  name: pv-prod-node
   labels:
     app: storage
 spec:
@@ -12,4 +11,4 @@ spec:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: "/mnt/mysql"
+    path: "/mnt/prod-mysql"
