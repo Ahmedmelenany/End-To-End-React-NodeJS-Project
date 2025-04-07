@@ -77,3 +77,49 @@ Make sure you have the following installed on your machine:
 - Make sure your `Dockerfile` is in the root directory of the project.
 - You can use `docker-compose` if your app depends on other services like databases.
 
+---
+
+# 🪖 Ansible
+
+You can use Ansible to automate your infrastructure configuration. 
+
+1. **Go to the right directory**
+
+   ```bash
+   docker build -t your-app-name .
+   ```
+2. **Add the IPs of your machines and Execute the playbook**
+
+   ```bash
+   ansible-playbook -i inventory playbook.yaml
+   ```
+
+
+# 📅 Jenkins CI/CD Pipeline
+
+To set up a Jenkins pipeline for this project:
+
+1. **Install Jenkins** on your machine or server.
+
+2. **Install the recommended and following plugins**:
+   - Blue Ocean
+   - Job Cacher
+   - NodeJS
+   - HTML Publisher
+   - Docker
+   - Kubernetes
+
+3. **Configure system and tools in manage jenkins section and configure the pipeline and use the Jenkinsfile provided**
+
+4. **Make sure that the integration with the tools is ready (docker, kubernetes, ...) and run the pipeline**
+
+5. **Screenshots of the pipeline, Artifacts and slack message**
+1. ***Pipeline view***
+![Blue Ocean ](./Images/Screenshot-01.png)
+
+2. ***Artifacts***
+![Html Reports ](./Images/Screenshot-02.png)
+
+3. ***Slack message***
+![Slack ](./Images/Screenshot-03.png)
+
