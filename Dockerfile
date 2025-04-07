@@ -2,10 +2,13 @@ FROM node:16-alpine AS builder
 
 WORKDIR /app
 
+COPY package*.json
+
+RUN npm install
+
 COPY . .
 
-# Install all dependencies and build the application
-RUN npm install  && npm run build-all
+RUN npm run build-all
 
 # Second stage for final image
 FROM node:16-alpine
