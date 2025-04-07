@@ -86,7 +86,7 @@ You can use Ansible to automate your infrastructure configuration.
 1. **Go to the right directory**
 
    ```bash
-   docker build -t your-app-name .
+   cd Ansible-roles
    ```
 2. **Add the IPs of your machines and Execute the playbook**
 
@@ -114,12 +114,13 @@ To set up a Jenkins pipeline for this project:
 4. **Make sure that the integration with the tools is ready (docker, kubernetes, ...) and run the pipeline**
 
 5. **Screenshots of the pipeline, Artifacts and slack message**
-1. ***Pipeline view***
+   ***Pipeline view***
 ![Blue Ocean ](./Images/Screenshot-01.png)
 
-2. ***Artifacts***
+   ***Artifacts***
 ![Html Reports ](./Images/Screenshot-02.png)
 
-3. ***Slack message***
-![Slack ](./Images/Screenshot-03.png)
+   ***Slack message***
+
+![Slack message ](./Images/Screenshot-03.png)
 
