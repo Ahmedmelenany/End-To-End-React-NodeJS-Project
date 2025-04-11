@@ -1,8 +1,17 @@
 # Application Guide
 
-This guide explains how to test the application locally and how to build a Docker image for it.
+This guide explains how to test the application overall and demonstrate its setup and everything about it.
 
 ---
+## The project content
+
+- Installing two-node Kubernetes cluster using the kubeadm way and configured containerd as a container runtime.
+- Automating infrastruce configuration with Ansible Roles.
+- Writing a Docker file and k8s manifests files needed for the project.
+- Complete CI/CD pipeline for building, testing and deploying the application in two environment.
+- Using Nginx as a Reverse proxy and configured it to forward the traffic to the application.
+- Using Prometheus and Grafana for monitoring and logging the application.
+
 
 ## 📦 Prerequisites
 
@@ -114,6 +123,7 @@ To set up a Jenkins pipeline for this project:
 4. **Make sure that the integration with the tools is ready (docker, kubernetes, ...) and run the pipeline**
 
 5. **Screenshots of the pipeline, Artifacts and slack message**
+
    ***Pipeline view***
 ![Blue Ocean ](./Images/Screenshot-01.png)
 
@@ -124,3 +134,50 @@ To set up a Jenkins pipeline for this project:
 
 ![Slack message ](./Images/Screenshot-03.png)
 
+# Kubernetes 
+
+1. **Go to kubernetes folder**
+
+- Every Environment has its persistance volume.
+- For staging Env you should configured service of the app as nodeport.
+- For prod Env has an ingress and network policy.
+
+```bash
+   cd kubernetes
+   ./install.sh < staging or prod >
+   ```
+![Resources ](./Images/Screenshot-05.png)
+
+2. **Ingress and Nginx**
+
+- Ingress is used to expose the app to the outside world.
+- Using Nginx container as a reverse proxy to route traffic to the app.
+- Network policy is used to restrict traffic between pods.
+
+![Ingress ](./Images/Screenshot-08.png)
+
+![Ingresss ](./Images/Screenshot-06.png)
+
+- Running Nginx container 
+
+```bash
+   docker run --name nginx-reverse-proxy -p 80:80 --add-host=host.docker.internal:host-gateway \
+   -v $(pwd)/default.conf:/etc/nginx/conf.d/default.conf nginx 
+   ```
+- You can forwarding to http://ip:port directly or using add-host option as above.
+- Nginx as reverse proxy conf file 
+
+```bash
+   server {
+    listen 80;
+    server_name ahmed.app.local;
+
+    location / {
+        proxy_pass http://host.docker.internal:30674;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+               }
+          }
+   ```
+
+![nginx ](./Images/Screenshot-07.png)
