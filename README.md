@@ -5,7 +5,7 @@ This guide explains how to test the application overall and demonstrate its setu
 ---
 ## The project content
 
-- Installing two-node Kubernetes cluster using the kubeadm way and configured containerd as a container runtime.
+- Installing two-node Kubernetes cluster using the kubeadm way version *1.31.7* and configured containerd as a container runtime.
 - Automating infrastruce configuration with Ansible Roles.
 - Writing a Docker file and k8s manifests files needed for the project.
 - Complete CI/CD pipeline for building, testing and deploying the application in two environment.
@@ -181,3 +181,113 @@ To set up a Jenkins pipeline for this project:
    ```
 
 ![nginx ](./Images/Screenshot-07.png)
+
+
+# 📈 Monitoring with Prometheus and Grafana
+
+A basic setup for monitoring and logging a Kubernetes cluster using Prometheus, Grafana, and Loki.
+
+## 🧠 Overview
+- **Monitoring**: Prometheus scrapes metrics from Kubernetes components and workloads. Grafana visualizes the data.
+- **Logging**: Loki collects logs using promtail, which can also be viewed through Grafana.
+- **Visualization**: Configured prom and loki as datasources to grafana and running at port 3000.
+
+![grafana ](./Images/Screenshot-09.png)
+
+
+---
+
+## 🔧 Prerequisites
+- A running Kubernetes cluster (I'm using kubeadm cluster)
+- `kubectl` configured
+- Helm 3 installed
+
+---
+
+### 1. Add Helm Repos
+```bash
+kubectl create namespace monitoring
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+```
+
+### 2. Install Prometheus Stack
+```bash
+helm show values prometheus-community/kube-prometheus-stack > prom-values.yml
+# Open values file with any text editor and set grafana enabled as false (true by default)
+# Or use this with helm install command --set grafana.enabled=false
+ 
+helm install prometheus prometheus-community/kube-prometheus-stack \
+  --namespace monitoring
+
+# Adject svc of prometheus to be nodeport to access it or use kubectl port-forward 
+```
+
+### 3. Access Grafana Dashboard
+Visit: `http://localhost:3000`  
+Default credentials: `admin / admin`
+Add Prometheus as a data source with its endpoint: `http://localhost:<port>`
+---
+
+## 📄 Logging with Loki and Promtail
+
+### 1. Add Loki Helm Repo
+```bash
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+```
+
+### 2. Install Loki Stack
+```bash
+# By default grafana is disabled and promtail is enabled 
+helm install loki grafana/loki-stack --namespace monitoring 
+kubectl port-forward -n monitoring svc/loki 3100:3100 &
+
+```
+
+### 3. Add Loki as a Data Source in Grafana
+- Go to Grafana → **Settings** → **Data Sources** → **Add data source** → Select **Loki**
+- URL: `http://localhost:3100`
+
+---
+## 🚨 Alerting in Grafana
+
+### 1. Enable and Manage Alerting in Grafana
+- Navigate to **Alerting** → **Alert Rules** to create and manage alerts.
+- Alerts can be configured to trigger on dashboards or data sources (Prometheus, Loki and any data source)
+
+- Setup alerts for *CPU Alerting - Storage Alerting - Pod Failure - Memory Alert*
+
+### 2. Setup Notification Channels
+- Go to **Alerting** → **Contact points** to set up integrations (Slack, Email, webhooks).
+- Use **Notification Policies** to manage alert routing and escalation.
+
+![alert ](./Images/Screenshot-12.png)
+
+
+
+## 🛠️ Custom Dashboards
+- Import pre-built dashboards from Grafana.com and Custom its with the correct queries 
+
+- Prometheus Dashboard
+![prometheus ](./Images/Screenshot-11.png)
+
+- Loki Dashborad (Logs with label app)
+![loki ](./Images/Screenshot-10.png)
+---
+---
+
+## 🧹 Cleanup
+```bash
+helm uninstall kube-prometheus-stack -n monitoring
+helm uninstall loki -n monitoring
+kubectl delete ns monitoring 
+```
+
+---
+
+## 📚 References for monitoring 
+- https://github.com/prometheus-community/helm-charts
+- https://grafana.com/docs/
+- https://grafana.com/grafana/dashboards/
+
