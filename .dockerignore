@@ -6,3 +6,5 @@ nodemodules
 .gitignore
 README.md
 LICENCE
+Jenkinsfile
+acceptance-test.js

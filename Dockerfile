@@ -13,6 +13,8 @@ RUN npm run build-all
 # Second stage for final image
 FROM node:16-alpine
 
+# Run Container as Non Root user
+
 # Copy required folders from first stage
 COPY --from=builder /app/package*.json .
 COPY --from=builder /app/build ./build
