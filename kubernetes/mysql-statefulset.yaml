@@ -37,6 +37,13 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: user-pass
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "512Mi"
+          limits:
+            cpu: "1.5"
+            memory: "2048Mi"
       restartPolicy: Always 
   volumeClaimTemplates:
   - metadata:
