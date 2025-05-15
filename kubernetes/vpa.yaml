@@ -9,4 +9,15 @@ spec:
     kind: StatefulSet
     name: mysql-statefulset
   updatePolicy:
-    updateMode: "Auto"  # v 1.33 "beta"
+    updateMode: "Auto"  # resize build-in v 1.33 "beta"
+  resourcePolicy:
+    containerPolicies:
+      - containerName: '*'
+        minAllowed:
+          cpu: 200m
+          memory: "512"
+        maxAllowed:
+          cpu: "1.5"  # a maximum vpa will be allocating this many cpus even if the demand is higher.
+          memory: "2048Mi"
+        controlledResources: ["cpu", "memory"]
+
