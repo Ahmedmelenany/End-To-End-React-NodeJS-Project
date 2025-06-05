@@ -3,6 +3,17 @@
 This guide explains how to test the application overall and demonstrate its setup and everything about it.
 
 ---
+
+## Table of contents
+
+- [Application Guide](#application-guide)
+  - [Table of contents](#table-of-contents)
+  - [The project content](#the-project-content)
+  - [Prerequisites](#prerequisites)
+  - [Running the Application Locally](#running-the-application-locally)
+  - [Building the Docker Image](#building-the-docker-image)
+  - [Notes](#notes)
+
 ## The project content
 
 - Installing two-node Kubernetes cluster using the kubeadm way version *1.31.7* and configured containerd as a container runtime.
