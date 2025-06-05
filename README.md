@@ -13,6 +13,24 @@ This guide explains how to test the application overall and demonstrate its setu
   - [Running the Application Locally](#running-the-application-locally)
   - [Building the Docker Image](#building-the-docker-image)
   - [Notes](#notes)
+- [Source Code](./src/)
+  - [Client](./src/client/)
+  - [Server](./src/server/)
+- [Ansible](#ansible)
+  - [Ansible Roles](./Ansible-roles/)
+- [Jenkins CI/CD Pipeline](#jenkins-cicd-pipeline)
+  - [Slack Shared Liberary](./vars/slackNotifications.groovy)
+  - [Jenkins file](./Jenkinsfile)
+- [Kubernetes](#kubernetes)
+  - [Kubernetes files](./kubernetes/)
+- [Monitoring with Prometheus and Grafana](#monitoring-with-prometheus-and-grafana)
+  - [Overview](#overview)
+  - [Prerequisites](#prerequisites)
+  - [Configuration](#configuration)
+  - [Logging with Loki and Promtail](#logging-with-loki-and-promtail)
+  - [Alerting in Grafana](#alerting-in-grafana)
+  - [Custom Dashboards](#custom-dashboards)
+  - [Cleanup](#cleanup)
 
 ## The project content
 
@@ -208,12 +226,14 @@ A basic setup for monitoring and logging a Kubernetes cluster using Prometheus, 
 
 ---
 
-## 🔧 Prerequisites
+## Prerequisites
 - A running Kubernetes cluster (I'm using kubeadm cluster)
 - `kubectl` configured
 - Helm 3 installed
 
 ---
+## Configuration
+- Install and Configure the required components.
 
 ### 1. Add Helm Repos
 ```bash
@@ -235,9 +255,9 @@ helm install prometheus prometheus-community/kube-prometheus-stack \
 ```
 
 ### 3. Access Grafana Dashboard
-Visit: `http://localhost:3000`  
-Default credentials: `admin / admin`
-Add Prometheus as a data source with its endpoint: `http://localhost:<port>`
+- Visit: `http://localhost:3000`  
+- Default credentials: `admin / admin`
+- Add Prometheus as a data source with its endpoint: `http://localhost:<port>`
 ---
 
 ## Logging with Loki and Promtail
