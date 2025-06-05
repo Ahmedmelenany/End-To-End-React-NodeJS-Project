@@ -13,7 +13,7 @@ This guide explains how to test the application overall and demonstrate its setu
 - Using Prometheus and Grafana for monitoring and logging the application.
 
 
-## 📦 Prerequisites
+## Prerequisites
 
 Make sure you have the following installed on your machine:
 
@@ -23,7 +23,7 @@ Make sure you have the following installed on your machine:
 
 ---
 
-## 🧪 Running the Application Locally
+## Running the Application Locally
 
 1. **Clone the Repository**
    ```bash
@@ -59,7 +59,7 @@ Make sure you have the following installed on your machine:
    ```
 ---
 
-## 🐳 Building the Docker Image
+## Building the Docker Image
 
 1. **Build the Docker Image**
    ```bash
@@ -80,7 +80,7 @@ Make sure you have the following installed on your machine:
 
 ---
 
-## 🚰 Notes
+## Notes
 
 - create a `.env` file and add them there for the test case.
 - Make sure your `Dockerfile` is in the root directory of the project.
@@ -88,7 +88,7 @@ Make sure you have the following installed on your machine:
 
 ---
 
-# 🪖 Ansible
+# Ansible
 
 You can use Ansible to automate your infrastructure configuration. 
 
@@ -104,7 +104,7 @@ You can use Ansible to automate your infrastructure configuration.
    ```
 
 
-# 📅 Jenkins CI/CD Pipeline
+# Jenkins CI/CD Pipeline
 
 To set up a Jenkins pipeline for this project:
 
@@ -183,11 +183,11 @@ To set up a Jenkins pipeline for this project:
 ![nginx ](./Images/Screenshot-07.png)
 
 
-# 📈 Monitoring with Prometheus and Grafana
+# Monitoring with Prometheus and Grafana
 
 A basic setup for monitoring and logging a Kubernetes cluster using Prometheus, Grafana, and Loki.
 
-## 🧠 Overview
+## Overview
 - **Monitoring**: Prometheus scrapes metrics from Kubernetes components and workloads. Grafana visualizes the data.
 - **Logging**: Loki collects logs using promtail, which can also be viewed through Grafana.
 - **Visualization**: Configured prom and loki as datasources to grafana and running at port 3000.
@@ -229,7 +229,7 @@ Default credentials: `admin / admin`
 Add Prometheus as a data source with its endpoint: `http://localhost:<port>`
 ---
 
-## 📄 Logging with Loki and Promtail
+## Logging with Loki and Promtail
 
 ### 1. Add Loki Helm Repo
 ```bash
@@ -250,7 +250,7 @@ kubectl port-forward -n monitoring svc/loki 3100:3100 &
 - URL: `http://localhost:3100`
 
 ---
-## 🚨 Alerting in Grafana
+## Alerting in Grafana
 
 ### 1. Enable and Manage Alerting in Grafana
 - Navigate to **Alerting** → **Alert Rules** to create and manage alerts.
@@ -266,7 +266,7 @@ kubectl port-forward -n monitoring svc/loki 3100:3100 &
 
 
 
-## 🛠️ Custom Dashboards
+## Custom Dashboards
 - Import pre-built dashboards from Grafana.com and Custom its with the correct queries 
 
 - Prometheus Dashboard
@@ -277,7 +277,7 @@ kubectl port-forward -n monitoring svc/loki 3100:3100 &
 ---
 ---
 
-## 🧹 Cleanup
+## Cleanup
 ```bash
 helm uninstall kube-prometheus-stack -n monitoring
 helm uninstall loki -n monitoring
@@ -286,7 +286,7 @@ kubectl delete ns monitoring
 
 ---
 
-## 📚 References for monitoring 
+## References for monitoring 
 - https://github.com/prometheus-community/helm-charts
 - https://grafana.com/docs/
 - https://grafana.com/grafana/dashboards/
